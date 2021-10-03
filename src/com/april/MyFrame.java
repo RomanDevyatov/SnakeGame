@@ -11,7 +11,7 @@ public class MyFrame extends JFrame {
         cont.add(pan);
 
         setTitle("Игра \"Змейка\"");
-        setBounds(0, 0, 800, 650);
+        setBounds(0, 0, 815, 660);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
