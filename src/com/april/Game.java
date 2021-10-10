@@ -5,10 +5,10 @@ public class Game {
     public int newNapr;
     private int cellCount = 30;
 
-    private int[][] mas; // -> null
+    private int[][] mas;
 
     private int napr; // 0 - left, 1 - up, 2 - right, 3 - down
-    private int gX, gY; // координаты головы змейки
+    private int gX, gY;
     private int kol;
     private int dlina;
 
@@ -32,6 +32,10 @@ public class Game {
 
     public int[][] getMas() {
         return mas;
+    }
+
+    private void increaseField(int x, int y) {
+        this.mas[y][x]++;
     }
 
     public int getMasVal(int x, int y) {
@@ -103,9 +107,10 @@ public class Game {
 
         int zmeikaStart = this.cellCount / 2;
         mas[zmeikaStart][zmeikaStart] = 1;
-//        mas[zmeikaStart][zmeikaStart + 1] = 2;
-//        mas[zmeikaStart][zmeikaStart + 2] = 3;
-//        dlina = 3;
+        mas[zmeikaStart + 1][zmeikaStart ] = 2;
+        mas[zmeikaStart + 2][zmeikaStart] = 3;
+
+        dlina = 3;
         gX = gY = zmeikaStart;
         isEnd = false;
 
@@ -125,7 +130,37 @@ public class Game {
         }
     }
 
-    public void peremGolova() {
+    public void perem() {
+        int flag = peremGolova();
+
+        if (flag == 3) {
+            this.setEnd(true);
+        } else {
+            for ( int i = 0; i < this.cellCount; i++) {
+                for (int k = 0; k < this.cellCount; k++) {
+                    if (getMasVal(i, k) > 0) {
+                        increaseField(i, k);
+                    } else if (getMasVal(i, k) == -2) {
+                        mas[k][i] = 1;
+                    }
+
+                    if (flag != 1) {
+                        if (mas[k][i] == (dlina + 1)) {
+                            mas[k][i] = 0;
+                        }
+                    }
+                }
+            }
+
+            if (flag == 1) {
+                dlina++;
+                makeNew();
+                kol += 10;
+            }
+        }
+    }
+
+    public int peremGolova() {
         povorot();
 
         if (napr == 0) {
@@ -154,25 +189,72 @@ public class Game {
             }
         }
 
+        int rez = 0;
         if (this.mas[this.gX][this.gY] == -1) {
-            makeNew();
-            kol += 10;
+            rez = 1; // попали туда, где еда
+        } else if (this.mas[this.gX][this.gY] == 0) {
+            rez = 2; // попали в пустое поле
+        } else if (this.mas[this.gX][this.gY] > 0) {
+            rez = 3; // попали в туловище змейки
         }
 
-        this.mas[this.gX][this.gY] = 1;
+        this.mas[this.gX][this.gY] = -2;
 
-//        int rez = 0;
-//        if (this.mas[this.gX][this.gY] == -1) {
-//            rez = 1; // попали туда, где еда
-//        } else if (this.mas[this.gX][this.gY] == 0) {
-//            rez = 2; // попали в пустое поле
-//        } else if (this.mas[this.gX][this.gY] > 0) {
-//            rez = 3; // попали в туловище змейки
-//        }
+        return rez;
     }
 
+//    public void peremGolovaOld() {
+//        povorot();
+//
+//        this.mas[this.gX][this.gY] = 0;
+//
+//        if (napr == 0) {
+//            if (this.gX - 1 >= 0) {
+//                this.gX--;
+//            } else {
+//                this.gX = 29;
+//            }
+//        } else if (napr == 1) {
+//            if (this.gY - 1 >= 0) {
+//                this.gY--;
+//            } else {
+//                this.gY = 29;
+//            }
+//        } else if (napr == 2) {
+//            if (this.gX < 29) {
+//                this.gX++;
+//            } else {
+//                this.gX = 0;
+//            }
+//        } else if (napr == 3) {
+//            if (this.gY < 29) {
+//                this.gY++;
+//            } else {
+//                this.gY = 0;
+//            }
+//        }
+//
+//        if (this.mas[this.gX][this.gY] == -1) {
+//            makeNew();
+//            kol += 10;
+//        }
+//
+//        this.mas[this.gX][this.gY] = 1;
+//
+////        int rez = 0;
+////        if (this.mas[this.gX][this.gY] == -1) {
+////            rez = 1; // попали туда, где еда
+////        } else if (this.mas[this.gX][this.gY] == 0) {
+////            rez = 2; // попали в пустое поле
+////        } else if (this.mas[this.gX][this.gY] > 0) {
+////            rez = 3; // попали в туловище змейки
+////        }
+//    }
+
     private void povorot() {
-        this.napr = newNapr;
+        if (Math.abs(this.napr - newNapr) != 2) {
+            this.napr = newNapr;
+        }
     }
 
 

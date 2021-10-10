@@ -64,7 +64,7 @@ public class MyPanel extends JPanel {
             this.telo = ImageIO.read(new File("C:\\Users\\Roman_Devyatov\\IdeaProjects\\Zmeika\\pictures\\telo.png"));
             this.golova = ImageIO.read(new File("C:\\Users\\Roman_Devyatov\\IdeaProjects\\Zmeika\\pictures\\golova.png"));
             this.ob = ImageIO.read(new File("C:\\Users\\Roman_Devyatov\\IdeaProjects\\Zmeika\\pictures\\object.png"));
-            this.endg = ImageIO.read(new File("C:\\Users\\Roman_Devyatov\\IdeaProjects\\Zmeika\\pictures\\endWin.png"));
+            this.endg = ImageIO.read(new File("C:\\Users\\Roman_Devyatov\\IdeaProjects\\Zmeika\\pictures\\endg.jpg"));
         } catch (Exception e) {
             System.out.println("Image file cannot be read " + e.getMessage());
         }
@@ -84,7 +84,9 @@ public class MyPanel extends JPanel {
         this.tmUpdate = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.peremGolova();
+                if (!game.isEnd()) {
+                    game.perem();
+                }
                 label.setText("Счёт: " + game.getKol());
             }
         });
@@ -137,12 +139,14 @@ public class MyPanel extends JPanel {
 
         for (int i = 0; i < this.cellCount; i++) {
             for (int k = 0; k < this.cellCount; k++) {
-                if (this.game.getMasVal(i, k) == 1) { // голова
-                    gr.drawImage(this.golova, 10 + k * 20, 10 + i * 20, 20, 20, null);
-                } else if (this.game.getMasVal(i, k) == -1) {
-                    gr.drawImage(this.ob, 10 + k * 20, 10 + i * 20, 20, 20, null);
-                } else if (this.game.getMasVal(i, k) >= 2) { // на будущее
-                    gr.drawImage(this.ob, 10 + k * 20, 10 + i * 20, 20, 20, null);
+                if (this.game.getMasVal(i, k) != 0) {
+                    if (this.game.getMasVal(i, k) == 1) {
+                        gr.drawImage(this.golova, 10 + k * 20, 10 + i * 20, 20, 20, null);
+                    } else if (this.game.getMasVal(i, k) == -1) {
+                        gr.drawImage(this.ob, 10 + k * 20, 10 + i * 20, 20, 20, null);
+                    } else if (this.game.getMasVal(i, k) >= 2) { // на будущее
+                        gr.drawImage(this.ob, 10 + k * 20, 10 + i * 20, 20, 20, null);
+                    }
                 }
             }
         }
@@ -151,6 +155,10 @@ public class MyPanel extends JPanel {
         for (int i = 0; i <= this.cellCount; ++i) {
             gr.drawLine(10 + i * 20, 10, 10 + i * 20, 610);
             gr.drawLine(10, 10 + i * 20, 610, 10 + i * 20);
+        }
+
+        if (game.isEnd()) {
+            gr.drawImage(this.endg, 250, 200, 300, 200, null);
         }
 
     }
