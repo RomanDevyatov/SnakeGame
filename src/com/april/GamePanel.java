@@ -11,8 +11,6 @@ public class GamePanel extends JPanel {
 
     private Game game;
 
-    private Timer tmDraw, tmUpdate;
-
     private Image backgroundImage;
     private Image bodyImage;
     private Image headImage;
@@ -65,16 +63,16 @@ public class GamePanel extends JPanel {
         this.cellCount = game.getCellCount();
         this.game.start();
 
-        this.tmDraw = new Timer(20, e -> repaint());
-        this.tmDraw.start();
+        Timer tmDraw = new Timer(20, e -> repaint());
+        tmDraw.start();
 
-        this.tmUpdate = new Timer(100, e -> {
+        Timer tmUpdate = new Timer(100, e -> {
             if (!game.isEnd()) {
                 game.move();
             }
             label.setText("Score: " + game.getScore());
         });
-        this.tmUpdate.start();
+        tmUpdate.start();
 
         setLayout(null);
 
@@ -126,9 +124,9 @@ public class GamePanel extends JPanel {
         }
 
         gr.setColor(Color.BLUE);
-        for (int i = 0; i <= this.cellCount; ++i) {
-            gr.drawLine(10 + i * 20, 10, 10 + i * 20, 610);
-            gr.drawLine(10, 10 + i * 20, 610, 10 + i * 20);
+        for (int indexLine = 0; indexLine <= this.cellCount; ++indexLine) {
+            gr.drawLine(10 + indexLine * 20, 10, 10 + indexLine * 20, 610);
+            gr.drawLine(10, 10 + indexLine * 20, 610, 10 + indexLine * 20);
         }
 
         if (game.isEnd()) {

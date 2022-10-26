@@ -174,22 +174,22 @@ public class Game {
             if (this.gX - 1 >= 0) {
                 this.gX--;
             } else {
-                this.gX = 29;
+                this.gX = cellCount - 1;
             }
         } else if (direction == UP_DIRECTION) {
             if (this.gY - 1 >= 0) {
                 this.gY--;
             } else {
-                this.gY = 29;
+                this.gY = cellCount - 1;
             }
         } else if (direction == RIGHT_DIRECTION) {
-            if (this.gX < 29) {
+            if (this.gX < cellCount - 1) {
                 this.gX++;
             } else {
                 this.gX = 0;
             }
         } else if (direction == DOWN_DIRECTION) {
-            if (this.gY < 29) {
+            if (this.gY < cellCount - 1) {
                 this.gY++;
             } else {
                 this.gY = 0;
@@ -208,54 +208,6 @@ public class Game {
         field[gX][gY] = -2;
 
         return result;
-    }
-
-    public void peremGolovaOld() {
-        turn();
-
-        field[this.gX][this.gY] = 0;
-
-        if (direction == 0) {
-            if (this.gX - 1 >= 0) {
-                this.gX--;
-            } else {
-                this.gX = 29;
-            }
-        } else if (direction == 1) {
-            if (this.gY - 1 >= 0) {
-                this.gY--;
-            } else {
-                this.gY = 29;
-            }
-        } else if (direction == 2) {
-            if (this.gX < 29) {
-                this.gX++;
-            } else {
-                this.gX = 0;
-            }
-        } else if (direction == 3) {
-            if (this.gY < 29) {
-                this.gY++;
-            } else {
-                this.gY = 0;
-            }
-        }
-
-        if (this.field[this.gX][this.gY] == -1) {
-            makeNew();
-            score += 10;
-        }
-
-        this.field[this.gX][this.gY] = 1;
-
-        int rez = 0;
-        if (this.field[this.gX][this.gY] == -1) {
-            rez = 1; // попали туда, где еда
-        } else if (this.field[this.gX][this.gY] == 0) {
-            rez = 2; // попали в пустое поле
-        } else if (this.field[this.gX][this.gY] > 0) {
-            rez = 3; // попали в туловище змейки
-        }
     }
 
     private void turn() {
