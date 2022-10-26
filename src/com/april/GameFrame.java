@@ -3,14 +3,14 @@ package com.april;
 import javax.swing.*;
 import java.awt.*;
 
-public class MyFrame extends JFrame {
+public class GameFrame extends JFrame {
 
-    public MyFrame() {
-        MyPanel pan = new MyPanel();
+    public GameFrame() {
+        GamePanel pan = new GamePanel();
         Container cont = getContentPane();
         cont.add(pan);
 
-        setTitle("Игра \"Змейка\"");
+        setTitle("\"Snake Game\"");
         setBounds(0, 0, 815, 660);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

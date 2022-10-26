@@ -2,56 +2,64 @@ package com.april;
 
 public class Game {
 
-    public int newNapr;
-    private int cellCount = 30;
+    public int newDirection;
+    private final int cellCount = 30;
 
-    private int[][] mas;
+    private final int LEFT_DIRECTION = 0;
+    private final int UP_DIRECTION = 1;
+    private final int RIGHT_DIRECTION = 2;
+    private final int DOWN_DIRECTION = 3;
+    private final int FEED_VALUE = 1;
+    private final int NO_FEED_VALUE = 2;
+    private final int BODY_VALUE = 3;
 
-    private int napr; // 0 - left, 1 - up, 2 - right, 3 - down
+    private int[][] field;
+
+    private int direction;
     private int gX, gY;
-    private int kol;
-    private int dlina;
+    private int score;
+    private int length;
 
     private boolean isEnd;
 
     public Game() {
-        mas = new int[this.cellCount][this.cellCount];
+        field = new int[cellCount][cellCount];
     }
 
     public int getCellCount() {
-        return this.cellCount;
+        return cellCount;
     }
 
-    public int getNewNapr() {
-        return newNapr;
+    public int getNewDirection() {
+        return newDirection;
     }
 
-    public void setNewNapr(int newNapr) {
-        this.newNapr = newNapr;
+    public void setNewDirection(int newDirection) {
+        this.newDirection = newDirection;
     }
 
-    public int[][] getMas() {
-        return mas;
+    public int[][] getField() {
+        return field;
     }
 
     private void increaseField(int x, int y) {
-        this.mas[y][x]++;
+        field[y][x]++;
     }
 
-    public int getMasVal(int x, int y) {
-        return this.mas[y][x];
+    public int getFieldValueAt(int x, int y) {
+        return field[y][x];
     }
 
-    public void setMas(int[][] mas) {
-        this.mas = mas;
+    public void setField(int[][] field) {
+        this.field = field;
     }
 
-    public int getNapr() {
-        return napr;
+    public int getDirection() {
+        return direction;
     }
 
-    public void setNapr(int napr) {
-        this.napr = napr;
+    public void setDirection(int direction) {
+        this.direction = direction;
     }
 
     public int getgX() {
@@ -70,20 +78,20 @@ public class Game {
         this.gY = gY;
     }
 
-    public int getKol() {
-        return kol;
+    public int getScore() {
+        return score;
     }
 
-    public void setKol(int kol) {
-        this.kol = kol;
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public int getDlina() {
-        return dlina;
+    public int getLength() {
+        return length;
     }
 
-    public void setDlina(int dlina) {
-        this.dlina = dlina;
+    public void setLength(int length) {
+        this.length = length;
     }
 
     public boolean isEnd() {
@@ -94,23 +102,22 @@ public class Game {
         isEnd = end;
     }
 
-
     public void start() {
-        for (int i = 0; i < this.cellCount; i++) {
-            for (int k = 0; k < this.cellCount; k++) {
-                mas[i][k] = 0;
+        for (int y = 0; y < this.cellCount; y++) {
+            for (int x = 0; x < this.cellCount; x++) {
+                field[y][x] = 0;
             }
         }
 
-        napr = 0; // изначально влево
-        kol = 0;
+        direction = LEFT_DIRECTION;
+        score = 0;
 
         int zmeikaStart = this.cellCount / 2;
-        mas[zmeikaStart][zmeikaStart] = 1;
-        mas[zmeikaStart + 1][zmeikaStart ] = 2;
-        mas[zmeikaStart + 2][zmeikaStart] = 3;
+        field[zmeikaStart][zmeikaStart] = 1;
+        field[zmeikaStart + 1][zmeikaStart ] = 2;
+        field[zmeikaStart + 2][zmeikaStart] = 3;
 
-        dlina = 3;
+        length = 3;
         gX = gY = zmeikaStart;
         isEnd = false;
 
@@ -119,69 +126,69 @@ public class Game {
 
     private void makeNew() {
         while(true) {
-            int x = (int) (Math.random() * this.cellCount);
-            int y = (int) (Math.random() * this.cellCount);
-            System.out.println("x: " + x + ", y: " + y);
+            int xRandom = (int) (Math.random() * this.cellCount);
+            int yRandom = (int) (Math.random() * this.cellCount);
+            System.out.println("xRandom: " + xRandom + ", yRandom: " + yRandom);
 
-            if (mas[y][x] == 0) {
-                mas[y][x] = -1;
+            if (field[yRandom][xRandom] == 0) {
+                field[yRandom][xRandom] = -1;
                 break;
             }
         }
     }
 
-    public void perem() {
-        int flag = peremGolova();
+    public void move() {
+        int moveResult = moveHead();
 
-        if (flag == 3) {
-            this.setEnd(true);
+        if (moveResult == BODY_VALUE) {
+            setEnd(true);
         } else {
-            for ( int i = 0; i < this.cellCount; i++) {
-                for (int k = 0; k < this.cellCount; k++) {
-                    if (getMasVal(i, k) > 0) {
-                        increaseField(i, k);
-                    } else if (getMasVal(i, k) == -2) {
-                        mas[k][i] = 1;
+            for (int y = 0; y < cellCount; y++) {
+                for (int x = 0; x < cellCount; x++) {
+                    if (getFieldValueAt(x, y) > 0) {
+                        increaseField(x, y);
+                    } else if (getFieldValueAt(x, y) == -2) {
+                        field[y][x] = 1;
                     }
 
-                    if (flag != 1) {
-                        if (mas[k][i] == (dlina + 1)) {
-                            mas[k][i] = 0;
+                    if (moveResult != 1) {
+                        if (field[y][x] == (length + 1)) {
+                            field[y][x] = 0;
                         }
                     }
                 }
             }
 
-            if (flag == 1) {
-                dlina++;
+            if (moveResult == FEED_VALUE) {
+                length++;
                 makeNew();
-                kol += 10;
+                score += 10;
             }
         }
     }
 
-    public int peremGolova() {
-        povorot();
+    public int moveHead() {
+        turn();
 
-        if (napr == 0) {
+        if (direction == LEFT_DIRECTION) {
             if (this.gX - 1 >= 0) {
                 this.gX--;
             } else {
                 this.gX = 29;
             }
-        } else if (napr == 1) {
+        } else if (direction == UP_DIRECTION) {
             if (this.gY - 1 >= 0) {
                 this.gY--;
             } else {
                 this.gY = 29;
             }
-        } else if (napr == 2) {
+        } else if (direction == RIGHT_DIRECTION) {
             if (this.gX < 29) {
                 this.gX++;
             } else {
                 this.gX = 0;
             }
-        } else if (napr == 3) {
+        } else if (direction == DOWN_DIRECTION) {
             if (this.gY < 29) {
                 this.gY++;
             } else {
@@ -189,75 +196,71 @@ public class Game {
             }
         }
 
+        int result = 0;
+        if (this.field[gX][gY] == -1) {
+            result = FEED_VALUE;
+        } else if (this.field[gX][gY] == 0) {
+            result = NO_FEED_VALUE;
+        } else if (this.field[gX][gY] > 0) {
+            result = BODY_VALUE;
+        }
+
+        field[gX][gY] = -2;
+
+        return result;
+    }
+
+    public void peremGolovaOld() {
+        turn();
+
+        field[this.gX][this.gY] = 0;
+
+        if (direction == 0) {
+            if (this.gX - 1 >= 0) {
+                this.gX--;
+            } else {
+                this.gX = 29;
+            }
+        } else if (direction == 1) {
+            if (this.gY - 1 >= 0) {
+                this.gY--;
+            } else {
+                this.gY = 29;
+            }
+        } else if (direction == 2) {
+            if (this.gX < 29) {
+                this.gX++;
+            } else {
+                this.gX = 0;
+            }
+        } else if (direction == 3) {
+            if (this.gY < 29) {
+                this.gY++;
+            } else {
+                this.gY = 0;
+            }
+        }
+
+        if (this.field[this.gX][this.gY] == -1) {
+            makeNew();
+            score += 10;
+        }
+
+        this.field[this.gX][this.gY] = 1;
+
         int rez = 0;
-        if (this.mas[this.gX][this.gY] == -1) {
+        if (this.field[this.gX][this.gY] == -1) {
             rez = 1; // попали туда, где еда
-        } else if (this.mas[this.gX][this.gY] == 0) {
+        } else if (this.field[this.gX][this.gY] == 0) {
             rez = 2; // попали в пустое поле
-        } else if (this.mas[this.gX][this.gY] > 0) {
+        } else if (this.field[this.gX][this.gY] > 0) {
             rez = 3; // попали в туловище змейки
         }
-
-        this.mas[this.gX][this.gY] = -2;
-
-        return rez;
     }
 
-//    public void peremGolovaOld() {
-//        povorot();
-//
-//        this.mas[this.gX][this.gY] = 0;
-//
-//        if (napr == 0) {
-//            if (this.gX - 1 >= 0) {
-//                this.gX--;
-//            } else {
-//                this.gX = 29;
-//            }
-//        } else if (napr == 1) {
-//            if (this.gY - 1 >= 0) {
-//                this.gY--;
-//            } else {
-//                this.gY = 29;
-//            }
-//        } else if (napr == 2) {
-//            if (this.gX < 29) {
-//                this.gX++;
-//            } else {
-//                this.gX = 0;
-//            }
-//        } else if (napr == 3) {
-//            if (this.gY < 29) {
-//                this.gY++;
-//            } else {
-//                this.gY = 0;
-//            }
-//        }
-//
-//        if (this.mas[this.gX][this.gY] == -1) {
-//            makeNew();
-//            kol += 10;
-//        }
-//
-//        this.mas[this.gX][this.gY] = 1;
-//
-////        int rez = 0;
-////        if (this.mas[this.gX][this.gY] == -1) {
-////            rez = 1; // попали туда, где еда
-////        } else if (this.mas[this.gX][this.gY] == 0) {
-////            rez = 2; // попали в пустое поле
-////        } else if (this.mas[this.gX][this.gY] > 0) {
-////            rez = 3; // попали в туловище змейки
-////        }
-//    }
-
-    private void povorot() {
-        if (Math.abs(this.napr - newNapr) != 2) {
-            this.napr = newNapr;
+    private void turn() {
+        if (Math.abs(this.direction - newDirection) != 2) {
+            this.direction = newDirection;
         }
     }
-
-
-
-
 }
